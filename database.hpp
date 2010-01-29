@@ -47,19 +47,24 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-static bool createConnection()
-{
-	QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
-	db.setDatabaseName(":memory:");
-	if (!db.open()) {
-		QMessageBox::critical(0, qApp->tr("Cannot open database"),
+static bool db_createConnection() {
+
+	// Setup database connection
+	QSqlDatabase db = QSqlDatabase::addDatabase ( "QPSQL" );
+	db.setHostName ( "epic.aaronnet.lan" );
+	db.setDatabaseName ( "acdj" );
+	db.setUserName ( "acdj" );
+	db.setPassword ( "acdj" );
+	db.setConnectOptions ( "requiressl=1" );
+	if ( ! db.open () ) {
+		QMessageBox::critical ( 0, qApp->tr("Cannot open database"),
 			qApp->tr("Unable to establish a database connection.\n"
-					 "This example needs SQLite support. Please read "
-					 "the Qt SQL driver documentation for information how "
-					 "to build it.\n\n"
+					 "\n"
 					 "Click Cancel to exit."), QMessageBox::Cancel);
 		return false;
 	}
+
+	return true;
 
 	QSqlQuery query;
 
@@ -93,5 +98,3 @@ static bool createConnection()
 }
 
 #endif
-
-

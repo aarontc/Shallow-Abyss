@@ -5,7 +5,7 @@
 
 
 //![0]
-MainWindow::MainWindow(const QSqlDatabase & db, QWidget * parent) {
+MainWindow::MainWindow ( QWidget * parent ) {
 
 	audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
 	mediaObject = new Phonon::MediaObject(this);

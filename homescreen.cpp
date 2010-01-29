@@ -32,7 +32,8 @@ void HomeScreen::changeEvent(QEvent *e) {
 }
 
 void HomeScreen::update_clock() {
-	static double x = 0;
-	++x;
-	m_ui->lcdTime->display(x);
+
+	QTime displayTime(QTime::currentTime());
+
+	m_ui->lcdTime->display(displayTime.toString("hh:mm"));
 }

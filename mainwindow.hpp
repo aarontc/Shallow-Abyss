@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 public:
-	MainWindow(const QSqlDatabase & db, QWidget *parent = 0);
+	MainWindow ( QWidget *parent = 0 );
 
 	QSize sizeHint() const {
 		return QSize(500, 300);
