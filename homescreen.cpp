@@ -1,7 +1,9 @@
 #include "homescreen.hpp"
 #include "ui_homescreen.h"
 #include <QTimer>
-#include <stdio.h>
+#include <QtSql>
+
+
 
 HomeScreen::HomeScreen(QWidget *parent) :
 		QMainWindow(parent),
