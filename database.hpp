@@ -51,15 +51,17 @@ static bool db_createConnection() {
 
 	// Setup database connection
 	QSqlDatabase db = QSqlDatabase::addDatabase ( "QPSQL" );
-	db.setHostName ( "epic.aaronnet.lan" );
-	db.setDatabaseName ( "acdj" );
-	db.setUserName ( "acdj" );
-	db.setPassword ( "acdj" );
+	db.setHostName ( "localhost" );
+	db.setDatabaseName ( "shadow" );
+	db.setUserName ( "shadow" );
+	db.setPassword ( "shadow" );
 	db.setConnectOptions ( "requiressl=1" );
 	if ( ! db.open () ) {
 		QMessageBox::critical ( 0, qApp->tr("Cannot open database"),
-			qApp->tr("Unable to establish a database connection.\n"
-					 "\n"
+			QString("Unable to establish a database connection. The last error was:\n"
+					 "\n" +
+					 db.lastError().text() +
+					 "\n\n"
 					 "Click Cancel to exit."), QMessageBox::Cancel);
 		return false;
 	}
