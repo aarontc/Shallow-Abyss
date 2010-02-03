@@ -13,7 +13,7 @@ public:
 
 protected:
 	void run();
-	void scan ( QString directory = NULL );
+	void scan ( const QString & directory = NULL );
 
 };
 

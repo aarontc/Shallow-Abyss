@@ -15,8 +15,8 @@ int main ( int argc, char * argv [] ) {
 	HomeScreen h;
 	h.show();
 
-	MainWindow window;
-	window.show();
+//	MainWindow window;
+//	window.show();
 
 	LibraryScanner ls;
 	ls.start();

@@ -5,6 +5,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QDirIterator>
+#include <taglib/tag.h>
 
 
 // FIXME: store this in settings
@@ -21,12 +22,18 @@ LibraryScanner::~LibraryScanner() {
 void LibraryScanner::run () {
 
 	qDebug() << "LibraryScanner: running";
+	scan ();
 
 }
 
-void LibraryScanner::scan ( QString directory ) {
+void LibraryScanner::scan ( const QString & directory ) {
+	QString path = directory;
+	if ( path == NULL )
+		path = LibraryPath;
 
-	 QDirIterator library ( LibraryPath, QDirIterator::Subdirectories );
+	qDebug() << "LibraryScanner::scan(path=\"" + path + "\")";
+
+	 QDirIterator library ( path, QDirIterator::Subdirectories );
 
 	 while ( library.hasNext() ) {
 		 qDebug() << library.next();
