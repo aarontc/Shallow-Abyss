@@ -14,7 +14,7 @@ public:
 protected:
 	void run();
 	void scan ( const QString & directory = NULL );
-
+	void readtags ( const QString & file );
 };
 
 
