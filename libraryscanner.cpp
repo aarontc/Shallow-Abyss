@@ -7,6 +7,7 @@
 #include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
+#include <QVariant>
 
 
 #include <iostream>
@@ -65,7 +66,7 @@ void LibraryScanner::scan ( const QString & directory ) {
 }
 
 void LibraryScanner::readtags ( const QString & file ) {
-
+	QFileInfo info(file);
 
 	cout << "******************** \"" << file.toLatin1().data() << "\" ********************" << endl;
 
@@ -83,6 +84,73 @@ void LibraryScanner::readtags ( const QString & file ) {
 		cout << "comment - \"" << tag->comment() << "\"" << endl;
 		cout << "track   - \"" << tag->track()   << "\"" << endl;
 		cout << "genre   - \"" << tag->genre()   << "\"" << endl;
+
+		QSqlQuery query;
+		query.setForwardOnly( true );
+
+		// See if the artist exists
+		quint64 artistid;
+		query.prepare ( "SELECT artistid FROM artists WHERE name=?" );
+		query.addBindValue( tag->artist().toCString(true) );
+		query.exec();
+
+		if ( query.size() > 0 ) {
+			query.first();
+			artistid = query.value(0).toULongLong();
+		} else {
+			query.clear();
+			query.prepare( "INSERT INTO artists (name) VALUES (?)" );
+			query.addBindValue( tag->artist().toCString(true) );
+			query.exec();
+			query.clear();
+			query.exec( "SELECT currval('artists_artistid_seq')" );
+			query.first();
+			artistid = query.value(0).toULongLong();
+		}
+
+		qDebug() << "artistid for \"" << tag->artist().toCString(true) << "\"=" << artistid;
+
+		// Get song ID if it exists
+		quint64 songid;
+		query.clear();
+		query.prepare( "SELECT songid FROM songs WHERE title=? AND artistid=?" );
+		query.addBindValue( tag->title().toCString(true) );
+		query.addBindValue( artistid );
+		query.exec();
+
+		if ( query.size() > 0 ) {
+			query.first();
+			songid = query.value(0).toULongLong();
+		} else {
+			query.clear();
+			query.prepare( "INSERT INTO songs (artistid, title) VALUES (?, ?)" );
+			query.addBindValue( artistid );
+			query.addBindValue( tag->title() .toCString(true) );
+			query.exec();
+			query.clear();
+			query.exec( "SELECT currval('songs_songid_seq')" );
+			query.first();
+			songid = query.value(0).toULongLong();
+		}
+
+		// Get file ID if it exists
+		query.clear();
+		query.prepare( "SELECT fileid FROM files WHERE songid=? AND path=?" );
+		query.addBindValue( songid );
+		query.addBindValue( file );
+		query.exec();
+
+		if ( query.size() > 0 ) {
+			qDebug() << "FILE EXISTS IN DB!";
+		} else {
+			query.clear();
+			query.prepare ( "INSERT INTO files (path, bytes, songid) VALUES (?, ?, ?)" );
+			query.addBindValue( file );
+			query.addBindValue( info.size() );
+			query.addBindValue( songid );
+			query.exec ();
+		}
+
 	}
 
 	if(!f.isNull() && f.audioProperties()) {
