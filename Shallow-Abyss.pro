@@ -17,13 +17,19 @@ TEMPLATE = app
 SOURCES += main.cpp \
     homescreen.cpp \
     libraryscanner.cpp \
-    musicplayer.cpp
+    musicplayer.cpp \
+    addmusic.cpp \
+    onscreenkeyboard.cpp
 HEADERS += homescreen.hpp \
     database.hpp \
     libraryscanner.hpp \
-    musicplayer.hpp
+    musicplayer.hpp \
+    addmusic.hpp \
+    onscreenkeyboard.hpp
 FORMS += homescreen.ui \
-    musicplayer.ui
+    musicplayer.ui \
+    addmusic.ui \
+    onscreenkeyboard.ui
 INCLUDEPATH += "/usr/include" \
     /usr/include/taglib
 LIBS += -L/usr/lib \
