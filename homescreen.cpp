@@ -1,39 +1,67 @@
 #include "homescreen.hpp"
-#include "ui_homescreen.h"
-#include <QTimer>
-#include <QtSql>
+
+HomeScreen::HomeScreen ( QWidget *parent ) :
+		QWidget ( parent ),
+		musPlayer ( 0 )
+{
+
+	// Create layout
+	vbxHome = new QVBoxLayout ();
+
+	tmrClockUpdate = new QTimer ( this );
+	lcdTime = new QLCDNumber ( 8 );
+	lcdTime -> setSegmentStyle ( QLCDNumber::Filled );
+	//vbxHome -> addWidget ( lcdTime );
+
+	//FIXME
+	musPlayer = new MusicPlayer ( this );
+	vbxHome -> addWidget ( musPlayer );
 
 
+	hbxModes = new QHBoxLayout ();
+	btnMusic = new QPushButton ( "Music" );
+	btnShutdown = new QPushButton ( "Shutdown" );
+	hbxModes -> addWidget ( btnMusic );
+	hbxModes -> addWidget ( btnShutdown );
 
-HomeScreen::HomeScreen(QWidget *parent) :
-		QMainWindow(parent),
-		m_ui(new Ui::HomeScreen) {
+	vbxHome -> addLayout ( hbxModes );
+	setLayout ( vbxHome );
 
-	m_ui->setupUi(this);
-	tmrClockUpdate = new QTimer(this);
-	connect(tmrClockUpdate, SIGNAL(timeout()), this, SLOT(update_clock()));
+	connect ( tmrClockUpdate, SIGNAL ( timeout () ), this, SLOT ( update_clock () ) );
 	tmrClockUpdate -> start ( 1000 );
+
+	connect ( btnMusic, SIGNAL ( clicked() ), this, SLOT ( mode_music () ) );
+
 }
 
 HomeScreen::~HomeScreen() {
 	delete tmrClockUpdate;
-	delete m_ui;
-}
-
-void HomeScreen::changeEvent(QEvent *e) {
-	QMainWindow::changeEvent(e);
-	switch (e->type()) {
-	case QEvent::LanguageChange:
-		m_ui->retranslateUi(this);
-		break;
-	default:
-		break;
-	}
+	delete btnShutdown;
+	delete btnMusic;
+	delete lcdTime;
+	delete hbxModes;
+	delete vbxHome;
 }
 
 void HomeScreen::update_clock() {
 
-	QTime displayTime(QTime::currentTime());
+	QTime displayTime ( QTime::currentTime () );
 
-	m_ui->lcdTime->display(displayTime.toString("hh:mm"));
+	lcdTime -> display ( displayTime.toString ( "hh:mm:ss" ) );
+}
+
+void HomeScreen::mode_music () {
+	//if ( ! musPlayer ) {
+		musPlayer = new MusicPlayer ( this );
+		vbxMusic = new QVBoxLayout ();
+		vbxMusic ->addWidget(musPlayer);
+
+	//}
+
+	delete vbxHome;
+	setLayout ( vbxMusic );
+}
+
+void HomeScreen::mode_shutdown () {
+
 }

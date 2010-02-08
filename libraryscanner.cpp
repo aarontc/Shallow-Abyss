@@ -69,7 +69,7 @@ void LibraryScanner::scan ( const QString & directory ) {
 void LibraryScanner::readtags ( const QString & file ) {
 	QFileInfo info(file);
 
-	cout << "******************** \"" << file.toLatin1().data() << "\" ********************" << endl;
+//	cout << "******************** \"" << file.toLatin1().data() << "\" ********************" << endl;
 
 	TagLib::FileRef f(file.toLatin1().data());
 
@@ -77,14 +77,14 @@ void LibraryScanner::readtags ( const QString & file ) {
 
 		TagLib::Tag *tag = f.tag();
 
-		cout << "-- TAG --" << endl;
-		cout << "title   - \"" << tag->title()   << "\"" << endl;
-		cout << "artist  - \"" << tag->artist()  << "\"" << endl;
-		cout << "album   - \"" << tag->album()   << "\"" << endl;
-		cout << "year    - \"" << tag->year()    << "\"" << endl;
-		cout << "comment - \"" << tag->comment() << "\"" << endl;
-		cout << "track   - \"" << tag->track()   << "\"" << endl;
-		cout << "genre   - \"" << tag->genre()   << "\"" << endl;
+//		cout << "-- TAG --" << endl;
+//		cout << "title   - \"" << tag->title()   << "\"" << endl;
+//		cout << "artist  - \"" << tag->artist()  << "\"" << endl;
+//		cout << "album   - \"" << tag->album()   << "\"" << endl;
+//		cout << "year    - \"" << tag->year()    << "\"" << endl;
+//		cout << "comment - \"" << tag->comment() << "\"" << endl;
+//		cout << "track   - \"" << tag->track()   << "\"" << endl;
+//		cout << "genre   - \"" << tag->genre()   << "\"" << endl;
 
 		QSqlQuery query;
 		query.setForwardOnly( true );
@@ -140,7 +140,6 @@ void LibraryScanner::readtags ( const QString & file ) {
 		query.addBindValue( songid );
 		query.addBindValue( file );
 		query.exec();
-					qDebug() << "Query: " << query.executedQuery();
 
 
 		if ( query.size() > 0 ) {
@@ -148,30 +147,29 @@ void LibraryScanner::readtags ( const QString & file ) {
 		} else {
 			query.clear();
 			query.prepare ( "INSERT INTO files (path, size, ctime, mtime, songid) VALUES (?, ?, ?, ?, ?)" );
-			query.bindValue( 0, file );
-			query.bindValue( 1, info.size() );
-			query.bindValue( 2, info.created() );
-			query.bindValue( 3, info.lastModified() );
-			query.bindValue( 4, songid );
+			query.addBindValue( file );
+			query.addBindValue( info.size() );
+			query.addBindValue( info.created() );
+			query.addBindValue( info.lastModified() );
+			query.addBindValue( songid );
 			query.exec ();
-			qDebug() << "Query: " << query.executedQuery();
 		}
 
 	}
 
-	if(!f.isNull() && f.audioProperties()) {
-
-		TagLib::AudioProperties *properties = f.audioProperties();
-
-		int seconds = properties->length() % 60;
-		int minutes = (properties->length() - seconds) / 60;
-
-		cout << "-- AUDIO --" << endl;
-		cout << "bitrate     - " << properties->bitrate() << endl;
-		cout << "sample rate - " << properties->sampleRate() << endl;
-		cout << "channels    - " << properties->channels() << endl;
-		cout << "length      - " << minutes << ":" << seconds << endl;
-	}
+//	if(!f.isNull() && f.audioProperties()) {
+//
+//		TagLib::AudioProperties *properties = f.audioProperties();
+//
+//		int seconds = properties->length() % 60;
+//		int minutes = (properties->length() - seconds) / 60;
+//
+//		cout << "-- AUDIO --" << endl;
+//		cout << "bitrate     - " << properties->bitrate() << endl;
+//		cout << "sample rate - " << properties->sampleRate() << endl;
+//		cout << "channels    - " << properties->channels() << endl;
+//		cout << "length      - " << minutes << ":" << seconds << endl;
+//	}
 }
 
 
