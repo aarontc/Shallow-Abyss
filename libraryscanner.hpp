@@ -3,8 +3,6 @@
 
 #include <QThread>
 
-//stuff
-
 class LibraryScanner : public QThread {
 
 public:

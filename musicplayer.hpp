@@ -11,7 +11,7 @@
 #include <phonon/backendcapabilities.h>
 #include <QList>
 #include <QFile>
-#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include "addmusic.hpp"
 
@@ -24,6 +24,13 @@ class MusicPlayer : public QWidget {
 public:
 	MusicPlayer(QWidget *parent = 0);
 	~MusicPlayer();
+
+public slots:
+	void playlist_add_artistid ( quint64 artistid );
+	void playlist_add_albumid ( quint64 albumid );
+	void playlist_add_songid ( quint64 songid );
+	void playlist_add_file ( QString path );
+
 
 protected:
 
@@ -39,6 +46,8 @@ private:
 	QList<Phonon::MediaSource> sources;
 
 	AddMusic * dlgAddMusic;
+
+	QSqlQuery * m_query;
 
 
 private slots:

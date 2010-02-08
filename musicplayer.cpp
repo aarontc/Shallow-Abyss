@@ -7,10 +7,12 @@
 #include <QTime>
 
 
+
 MusicPlayer::MusicPlayer(QWidget *parent) :
 		QWidget(parent),
 		m_ui(new Ui::MusicPlayer)
 {
+	m_query = new QSqlQuery;
 	m_ui->setupUi(this);
 
 
@@ -24,6 +26,10 @@ MusicPlayer::MusicPlayer(QWidget *parent) :
 	Phonon::createPath(mediaObject, audioOutput);
 
 	dlgAddMusic = new AddMusic ( this );
+	connect ( dlgAddMusic, SIGNAL(selected_artistid(quint64)), this, SLOT(playlist_add_artistid(quint64)));
+	connect ( dlgAddMusic, SIGNAL(selected_albumid(quint64)), this, SLOT(playlist_add_albumid(quint64)));
+	connect ( dlgAddMusic, SIGNAL(selected_songid(quint64)), this, SLOT(playlist_add_songid(quint64)));
+	connect ( dlgAddMusic, SIGNAL(selected_file(QString)), this, SLOT(playlist_add_file(QString)));
 
 	connect ( m_ui->btnAddFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
 
@@ -54,8 +60,37 @@ void MusicPlayer::tick ( qint64 time ) {
 	m_ui->lcdTime -> display ( displayTime.toString ( "mm:ss" ) );
 }
 
+void MusicPlayer::playlist_add_artistid ( quint64 artistid ) {
+	m_query->prepare ( "SELECT files.path FROM files JOIN songs ON songs.songid=files.songid JOIN artists ON songs.artistid=artists.artistid WHERE artists.artistid=? " );
+	m_query->addBindValue( artistid );
+	m_query->exec();
 
+	while ( m_query->next() ) {
+		qDebug() << "adding file" << m_query->value(0).toString();
+	}
+}
 
+void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
+	m_query->prepare ( "SELECT files.path FROM files WHERE artistid=? JOIN songs ON songs.songid=files.songid JOIN artists ON songs.artistid=artists.artistid" );
+	m_query->addBindValue( albumid );
+	m_query->exec();
 
+	while ( m_query->next() ) {
+		qDebug() << "adding file" << m_query->value(0).toString();
+	}
+}
 
+void MusicPlayer::playlist_add_songid ( quint64 songid ) {
+	m_query->prepare ( "SELECT files.path FROM files WHERE artistid=? JOIN songs ON songs.songid=files.songid JOIN artists ON songs.artistid=artists.artistid" );
+	m_query->addBindValue( songid );
+	m_query->exec();
+
+	while ( m_query->next() ) {
+		qDebug() << "adding file" << m_query->value(0).toString();
+	}
+}
+
+void MusicPlayer::playlist_add_file ( QString file ) {
+
+}
 

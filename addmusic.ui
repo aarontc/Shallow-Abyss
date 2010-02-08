@@ -75,7 +75,7 @@
     <string>Search:</string>
    </property>
   </widget>
-  <widget class="QTableWidget" name="tableWidget">
+  <widget class="QTableWidget" name="tblSongs">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -83,6 +83,9 @@
      <width>531</width>
      <height>151</height>
     </rect>
+   </property>
+   <property name="rowCount">
+    <number>0</number>
    </property>
    <column>
     <property name="text">
@@ -161,8 +164,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tblSongs</sender>
+   <signal>cellClicked(int,int)</signal>
+   <receiver>AddMusic</receiver>
+   <slot>cell_activated(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>189</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>vk_pressed(char)</slot>
+  <slot>cell_activated(int,int)</slot>
  </slots>
 </ui>
