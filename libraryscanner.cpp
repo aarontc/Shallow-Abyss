@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QVariant>
+#include <QDateTime>
 
 
 #include <iostream>
@@ -139,16 +140,21 @@ void LibraryScanner::readtags ( const QString & file ) {
 		query.addBindValue( songid );
 		query.addBindValue( file );
 		query.exec();
+					qDebug() << "Query: " << query.executedQuery();
+
 
 		if ( query.size() > 0 ) {
 			qDebug() << "FILE EXISTS IN DB!";
 		} else {
 			query.clear();
-			query.prepare ( "INSERT INTO files (path, bytes, songid) VALUES (?, ?, ?)" );
-			query.addBindValue( file );
-			query.addBindValue( info.size() );
-			query.addBindValue( songid );
+			query.prepare ( "INSERT INTO files (path, size, ctime, mtime, songid) VALUES (?, ?, ?, ?, ?)" );
+			query.bindValue( 0, file );
+			query.bindValue( 1, info.size() );
+			query.bindValue( 2, info.created() );
+			query.bindValue( 3, info.lastModified() );
+			query.bindValue( 4, songid );
 			query.exec ();
+			qDebug() << "Query: " << query.executedQuery();
 		}
 
 	}
