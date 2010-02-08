@@ -65,9 +65,15 @@ void MusicPlayer::playlist_add_artistid ( quint64 artistid ) {
 	m_query->addBindValue( artistid );
 	m_query->exec();
 
+
+	int row = m_ui->tblMusic->rowCount();
 	while ( m_query->next() ) {
-		qDebug() << "adding file" << m_query->value(0).toString();
+		m_ui->tblMusic->setRowCount(row+1);
+		QTableWidgetItem * newitem = new QTableWidgetItem(m_query->value(0).toString());
+		m_ui->tblMusic->setItem(row++, 0, newitem);
 	}
+	m_ui->tblMusic->setRowCount(row);
+
 }
 
 void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
@@ -75,9 +81,14 @@ void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
 	m_query->addBindValue( albumid );
 	m_query->exec();
 
+	int row = m_ui->tblMusic->rowCount();
 	while ( m_query->next() ) {
-		qDebug() << "adding file" << m_query->value(0).toString();
+		m_ui->tblMusic->setRowCount(row+1);
+		QTableWidgetItem * newitem = new QTableWidgetItem(m_query->value(0).toString());
+		m_ui->tblMusic->setItem(row++, 0, newitem);
 	}
+	m_ui->tblMusic->setRowCount(row);
+
 }
 
 void MusicPlayer::playlist_add_songid ( quint64 songid ) {
@@ -85,12 +96,22 @@ void MusicPlayer::playlist_add_songid ( quint64 songid ) {
 	m_query->addBindValue( songid );
 	m_query->exec();
 
+	int row = m_ui->tblMusic->rowCount();
 	while ( m_query->next() ) {
-		qDebug() << "adding file" << m_query->value(0).toString();
+		m_ui->tblMusic->setRowCount(row+1);
+		QTableWidgetItem * newitem = new QTableWidgetItem(m_query->value(0).toString());
+		m_ui->tblMusic->setItem(row++, 0, newitem);
 	}
+	m_ui->tblMusic->setRowCount(row);
+
 }
 
 void MusicPlayer::playlist_add_file ( QString file ) {
+	int row = m_ui->tblMusic->rowCount();
+	m_ui->tblMusic->setRowCount(row+1);
+	QTableWidgetItem * newitem = new QTableWidgetItem(file);
+	m_ui->tblMusic->setItem(row++, 0, newitem);
+	m_ui->tblMusic->setRowCount(row);
 
 }
 

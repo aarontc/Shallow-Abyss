@@ -16,7 +16,7 @@ public:
 	AddMusic(QWidget *parent = 0);
 	~AddMusic();
 
-	static const int MaxResults = 50;
+	static const int MaxResults = 100;
 
 signals:
 	void selected_artistid(quint64);
