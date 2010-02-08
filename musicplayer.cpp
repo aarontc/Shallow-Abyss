@@ -23,7 +23,9 @@ MusicPlayer::MusicPlayer(QWidget *parent) :
 
 	Phonon::createPath(mediaObject, audioOutput);
 
+	dlgAddMusic = new AddMusic ( this );
 
+	connect ( m_ui->btnAddFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
 
 }
 
@@ -33,17 +35,17 @@ MusicPlayer::~MusicPlayer () {
 
 void MusicPlayer::addFiles()
 {
-	QStringList files = QFileDialog::getOpenFileNames(this, tr("Select Music Files"),
-		QDesktopServices::storageLocation(QDesktopServices::MusicLocation));
 
-	if (files.isEmpty())
-		return;
+	int result = dlgAddMusic->exec();
 
-	foreach (QString string, files) {
-			Phonon::MediaSource source(string);
+	qDebug() << "after dlgaddmusic";
 
-		sources.append(source);
-	}
+//
+//	foreach (QString string, files) {
+//			Phonon::MediaSource source(string);
+//
+//		sources.append(source);
+//	}
 
 }
 

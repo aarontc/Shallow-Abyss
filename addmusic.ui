@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>480</height>
+    <height>380</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>550</x>
      <y>10</y>
      <width>81</width>
-     <height>461</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="orientation">
@@ -29,111 +29,88 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnA">
+  <widget class="OnscreenKeyboard" name="kbdOnScreen" native="true">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>130</y>
-     <width>31</width>
-     <height>27</height>
+     <x>90</x>
+     <y>200</y>
+     <width>401</width>
+     <height>161</height>
     </rect>
-   </property>
-   <property name="text">
-    <string>A</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnA_2">
+  <widget class="QPushButton" name="btnFile">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>90</y>
-     <width>31</width>
+     <x>550</x>
+     <y>50</y>
+     <width>81</width>
      <height>27</height>
     </rect>
    </property>
    <property name="text">
-    <string>Q</string>
+    <string>File...</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnA_3">
+  <widget class="QLineEdit" name="txtSearch">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>90</y>
-     <width>31</width>
-     <height>27</height>
+     <x>60</x>
+     <y>10</y>
+     <width>481</width>
+     <height>23</height>
     </rect>
-   </property>
-   <property name="text">
-    <string>W</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnA_4">
+  <widget class="QLabel" name="lblSearch">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>130</y>
-     <width>31</width>
-     <height>27</height>
+     <x>10</x>
+     <y>10</y>
+     <width>56</width>
+     <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>S</string>
+    <string>Search:</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnA_5">
+  <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>90</y>
-     <width>31</width>
-     <height>27</height>
+     <x>10</x>
+     <y>40</y>
+     <width>531</width>
+     <height>151</height>
     </rect>
    </property>
-   <property name="text">
-    <string>E</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnA_6">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>130</y>
-     <width>31</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>D</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnA_7">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>90</y>
-     <width>31</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>A</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnA_8">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>170</y>
-     <width>31</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>A</string>
-   </property>
+   <column>
+    <property name="text">
+     <string>Artist</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Album</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Title</string>
+    </property>
+   </column>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>OnscreenKeyboard</class>
+   <extends>QWidget</extends>
+   <header>onscreenkeyboard.h</header>
+   <slots>
+    <signal>keypress(char)</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -168,5 +145,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>kbdOnScreen</sender>
+   <signal>keypress(char)</signal>
+   <receiver>AddMusic</receiver>
+   <slot>vk_pressed(char)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>290</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>189</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>vk_pressed(char)</slot>
+ </slots>
 </ui>

@@ -13,6 +13,7 @@
 #include <QFile>
 #include <QSqlDatabase>
 
+#include "addmusic.hpp"
 
 namespace Ui {
 	class MusicPlayer;
@@ -36,6 +37,8 @@ private:
 	Phonon::MediaObject * mediaObject;
 	Phonon::AudioOutput * audioOutput;
 	QList<Phonon::MediaSource> sources;
+
+	AddMusic * dlgAddMusic;
 
 
 private slots:
