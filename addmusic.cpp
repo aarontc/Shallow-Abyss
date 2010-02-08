@@ -80,9 +80,11 @@ void AddMusic::on_buttonBox_accepted()
 			break;
 		case 1: // album
 			qDebug() << "Selected album ID" << m_albumIDs[m_curRow];
+			emit selected_albumid(m_albumIDs[m_curRow]);
 			break;
 		case 2: // song
 			qDebug() << "Selected song ID" << m_songIDs[m_curRow];
+			emit selected_songid(m_songIDs[m_curRow]);
 			break;
 		}
 }
@@ -90,6 +92,4 @@ void AddMusic::on_buttonBox_accepted()
 void AddMusic::cell_activated(int row, int col) {
 	m_curRow = row;
 	m_curCol = col;
-
-	qDebug() << "row:" << row << "col:" << col;
 }

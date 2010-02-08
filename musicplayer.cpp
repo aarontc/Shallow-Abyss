@@ -31,7 +31,7 @@ MusicPlayer::MusicPlayer(QWidget *parent) :
 	connect ( dlgAddMusic, SIGNAL(selected_songid(quint64)), this, SLOT(playlist_add_songid(quint64)));
 	connect ( dlgAddMusic, SIGNAL(selected_file(QString)), this, SLOT(playlist_add_file(QString)));
 
-	connect ( m_ui->btnAddFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
+	connect ( m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addFiles()));
 
 }
 
@@ -71,7 +71,7 @@ void MusicPlayer::playlist_add_artistid ( quint64 artistid ) {
 }
 
 void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
-	m_query->prepare ( "SELECT files.path FROM files WHERE artistid=? JOIN songs ON songs.songid=files.songid JOIN artists ON songs.artistid=artists.artistid" );
+	m_query->prepare ( "SELECT files.path FROM files JOIN songs ON songs.songid=files.songid JOIN artists ON songs.artistid=artists.artistid" );
 	m_query->addBindValue( albumid );
 	m_query->exec();
 
@@ -81,7 +81,7 @@ void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
 }
 
 void MusicPlayer::playlist_add_songid ( quint64 songid ) {
-	m_query->prepare ( "SELECT files.path FROM files WHERE artistid=? JOIN songs ON songs.songid=files.songid JOIN artists ON songs.artistid=artists.artistid" );
+	m_query->prepare ( "SELECT files.path FROM files JOIN songs ON songs.songid=files.songid WHERE songs.songid=?" );
 	m_query->addBindValue( songid );
 	m_query->exec();
 
