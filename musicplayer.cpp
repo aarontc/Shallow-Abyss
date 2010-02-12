@@ -40,19 +40,45 @@ MusicPlayer::~MusicPlayer () {
 	delete m_ui;
 }
 
+void MusicPlayer::clearPlaylist()
+{
+	playlist.clear();
+	m_ui->tblMusic->clearContents();
+	m_ui->tblMusic->setRowCount(0);
+}
+
+void MusicPlayer::shufflePlaylist() {
+	QVector<Song *> newlist;
+	int x = playlist.size();
+
+	while ( x > 0 ) {
+		int y = rand() % x;
+
+		newlist.append(playlist.at(y));
+		playlist.remove(y);
+
+		x = playlist.size();
+	}
+
+	clearPlaylist();
+	int row = m_ui->tblMusic->rowCount();
+	playlist = newlist;
+	foreach(Song * song, playlist) {
+		m_ui->tblMusic->setRowCount(row+1);
+		QTableWidgetItem * newitem = new QTableWidgetItem(song->artist());
+		m_ui->tblMusic->setItem(row, 0, newitem);
+		newitem = new QTableWidgetItem(song->title());
+		m_ui->tblMusic->setItem(row++, 1, newitem);
+	}
+	m_ui->tblMusic->setRowCount(row);
+
+
+}
+
 void MusicPlayer::addFiles()
 {
 
-	int result = dlgAddMusic->exec();
-
-	qDebug() << "after dlgaddmusic";
-
-//
-//	foreach (QString string, files) {
-//			Phonon::MediaSource source(string);
-//
-//		sources.append(source);
-//	}
+	dlgAddMusic->exec();
 
 }
 
@@ -62,31 +88,37 @@ void MusicPlayer::tick ( qint64 time ) {
 }
 
 void MusicPlayer::playlist_add_artistid ( quint64 artistid ) {
-	m_query->prepare ( "SELECT files.path FROM files JOIN songs ON songs.songid=files.songid JOIN artists ON songs.artistid=artists.artistid WHERE artists.artistid=? " );
+	m_query->prepare ( "SELECT songs.songid FROM songs WHERE songs.artistid=? " );
 	m_query->addBindValue( artistid );
 	m_query->exec();
 
 
 	int row = m_ui->tblMusic->rowCount();
 	while ( m_query->next() ) {
+		playlist += new Song(m_query->value(0).toULongLong());
 		m_ui->tblMusic->setRowCount(row+1);
-		QTableWidgetItem * newitem = new QTableWidgetItem(m_query->value(0).toString());
-		m_ui->tblMusic->setItem(row++, 0, newitem);
+		QTableWidgetItem * newitem = new QTableWidgetItem(playlist.last()->artist());
+		m_ui->tblMusic->setItem(row, 0, newitem);
+		newitem = new QTableWidgetItem(playlist.last()->title());
+		m_ui->tblMusic->setItem(row++, 1, newitem);
 	}
 	m_ui->tblMusic->setRowCount(row);
 
 }
 
 void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
-	m_query->prepare ( "SELECT files.path FROM files JOIN songs ON songs.songid=files.songid JOIN artists ON songs.artistid=artists.artistid" );
+	m_query->prepare ( "SELECT songs.songid FROM songs WHERE songs.albumid=?" );
 	m_query->addBindValue( albumid );
 	m_query->exec();
 
 	int row = m_ui->tblMusic->rowCount();
 	while ( m_query->next() ) {
+		playlist += new Song(m_query->value(0).toULongLong());
 		m_ui->tblMusic->setRowCount(row+1);
-		QTableWidgetItem * newitem = new QTableWidgetItem(m_query->value(0).toString());
-		m_ui->tblMusic->setItem(row++, 0, newitem);
+		QTableWidgetItem * newitem = new QTableWidgetItem(playlist.last()->artist());
+		m_ui->tblMusic->setItem(row, 0, newitem);
+		newitem = new QTableWidgetItem(playlist.last()->title());
+		m_ui->tblMusic->setItem(row++, 1, newitem);
 	}
 	m_ui->tblMusic->setRowCount(row);
 
@@ -97,10 +129,11 @@ void MusicPlayer::playlist_add_songid ( quint64 songid ) {
 
 	int row = m_ui->tblMusic->rowCount();
 
-	m_ui->tblMusic->setRowCount(row+1);
-	QTableWidgetItem * newitem = new QTableWidgetItem(playlist.last()->title());
-	m_ui->tblMusic->setItem(row++, 0, newitem);
-	m_ui->tblMusic->setRowCount(row);
+	m_ui->tblMusic->setRowCount(row + 1);
+	QTableWidgetItem * newitem = new QTableWidgetItem(playlist.last()->artist());
+	m_ui->tblMusic->setItem(row, 0, newitem);
+	newitem = new QTableWidgetItem(playlist.last()->title());
+	m_ui->tblMusic->setItem(row, 1, newitem);
 }
 
 void MusicPlayer::playlist_add_file ( QString file ) {

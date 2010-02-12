@@ -56,6 +56,8 @@ private:
 private slots:
 	void addFiles();
 	void tick(qint64 time);
+	void clearPlaylist();
+	void shufflePlaylist();
 
 };
 

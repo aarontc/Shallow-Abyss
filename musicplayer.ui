@@ -122,5 +122,42 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnClear</sender>
+   <signal>clicked()</signal>
+   <receiver>MusicPlayer</receiver>
+   <slot>clearPlaylist()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>737</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnShuffle</sender>
+   <signal>clicked()</signal>
+   <receiver>MusicPlayer</receiver>
+   <slot>shufflePlaylist()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>610</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>clearPlaylist()</slot>
+  <slot>shufflePlaylist()</slot>
+ </slots>
 </ui>
