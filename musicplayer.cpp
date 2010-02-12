@@ -12,6 +12,7 @@ MusicPlayer::MusicPlayer(QWidget *parent) :
 		QWidget(parent),
 		m_ui(new Ui::MusicPlayer)
 {
+
 	m_query = new QSqlQuery;
 	m_ui->setupUi(this);
 
@@ -92,18 +93,14 @@ void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
 }
 
 void MusicPlayer::playlist_add_songid ( quint64 songid ) {
-	m_query->prepare ( "SELECT files.path FROM files JOIN songs ON songs.songid=files.songid WHERE songs.songid=?" );
-	m_query->addBindValue( songid );
-	m_query->exec();
+	playlist += new Song(songid);
 
 	int row = m_ui->tblMusic->rowCount();
-	while ( m_query->next() ) {
-		m_ui->tblMusic->setRowCount(row+1);
-		QTableWidgetItem * newitem = new QTableWidgetItem(m_query->value(0).toString());
-		m_ui->tblMusic->setItem(row++, 0, newitem);
-	}
-	m_ui->tblMusic->setRowCount(row);
 
+	m_ui->tblMusic->setRowCount(row+1);
+	QTableWidgetItem * newitem = new QTableWidgetItem(playlist.last()->title());
+	m_ui->tblMusic->setItem(row++, 0, newitem);
+	m_ui->tblMusic->setRowCount(row);
 }
 
 void MusicPlayer::playlist_add_file ( QString file ) {

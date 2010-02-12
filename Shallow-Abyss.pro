@@ -19,13 +19,15 @@ SOURCES += main.cpp \
     libraryscanner.cpp \
     musicplayer.cpp \
     addmusic.cpp \
-    onscreenkeyboard.cpp
+    onscreenkeyboard.cpp \
+    song.cpp
 HEADERS += homescreen.hpp \
     database.hpp \
     libraryscanner.hpp \
     musicplayer.hpp \
     addmusic.hpp \
-    onscreenkeyboard.hpp
+    onscreenkeyboard.hpp \
+    song.hpp
 FORMS += homescreen.ui \
     musicplayer.ui \
     addmusic.ui \

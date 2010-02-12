@@ -12,8 +12,10 @@
 #include <QList>
 #include <QFile>
 #include <QSqlQuery>
+#include <QVector>
 
 #include "addmusic.hpp"
+#include "song.hpp"
 
 namespace Ui {
 	class MusicPlayer;
@@ -49,6 +51,7 @@ private:
 
 	QSqlQuery * m_query;
 
+	QVector<Song *> playlist;
 
 private slots:
 	void addFiles();

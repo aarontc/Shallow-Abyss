@@ -111,12 +111,42 @@ void LibraryScanner::readtags ( const QString & file ) {
 
 		qDebug() << "artistid for \"" << tag->artist().toCString(true) << "\"=" << artistid;
 
+
+
+
+		// See if the album exists
+		quint64 albumid;
+		query.prepare ( "SELECT albumid FROM albums WHERE name=?" );
+		query.addBindValue( tag->album().toCString(true) );
+		query.exec();
+
+		if ( query.size() > 0 ) {
+			query.first();
+			albumid = query.value(0).toULongLong();
+		} else {
+			query.clear();
+			query.prepare( "INSERT INTO albums (name) VALUES (?)" );
+			query.addBindValue( tag->album().toCString(true) );
+			query.exec();
+			query.clear();
+			query.exec( "SELECT currval('albums_albumid_seq')" );
+			query.first();
+			artistid = query.value(0).toULongLong();
+		}
+
+		qDebug() << "albumid for \"" << tag->album().toCString(true) << "\"=" << albumid;
+
+
+
+
 		// Get song ID if it exists
 		quint64 songid;
 		query.clear();
-		query.prepare( "SELECT songid FROM songs WHERE title=? AND artistid=?" );
+		query.prepare( "SELECT songid FROM songs WHERE title=? AND artistid=? AND albumid=?" );
 		query.addBindValue( tag->title().toCString(true) );
 		query.addBindValue( artistid );
+		query.addBindValue(albumid);
+
 		query.exec();
 
 		if ( query.size() > 0 ) {
@@ -124,8 +154,9 @@ void LibraryScanner::readtags ( const QString & file ) {
 			songid = query.value(0).toULongLong();
 		} else {
 			query.clear();
-			query.prepare( "INSERT INTO songs (artistid, title) VALUES (?, ?)" );
+			query.prepare( "INSERT INTO songs (artistid, albumid, title) VALUES (?, ?, ?)" );
 			query.addBindValue( artistid );
+			query.addBindValue(albumid);
 			query.addBindValue( tag->title() .toCString(true) );
 			query.exec();
 			query.clear();

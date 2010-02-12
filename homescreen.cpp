@@ -44,21 +44,21 @@ HomeScreen::~HomeScreen() {
 }
 
 void HomeScreen::update_clock() {
-
 	QTime displayTime ( QTime::currentTime () );
-
 	lcdTime -> display ( displayTime.toString ( "hh:mm:ss" ) );
 }
 
 void HomeScreen::mode_music () {
-	//if ( ! musPlayer ) {
-		musPlayer = new MusicPlayer ( this );
-		vbxMusic = new QVBoxLayout ();
-		vbxMusic ->addWidget(musPlayer);
+	tmrClockUpdate->deleteLater();
+	lcdTime -> deleteLater();
+	vbxHome->deleteLater();
 
-	//}
 
-	delete vbxHome;
+	musPlayer = new MusicPlayer ( this );
+	vbxMusic = new QVBoxLayout ();
+	vbxMusic ->addWidget(musPlayer);
+	vbxMusic->addLayout(hbxModes);
+
 	setLayout ( vbxMusic );
 }
 
