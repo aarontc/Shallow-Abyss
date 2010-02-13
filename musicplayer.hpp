@@ -45,19 +45,24 @@ private:
 
 	Phonon::MediaObject * mediaObject;
 	Phonon::AudioOutput * audioOutput;
-	QList<Phonon::MediaSource> sources;
 
 	AddMusic * dlgAddMusic;
 
 	QSqlQuery * m_query;
 
-	QVector<Song *> playlist;
+	QVector<Song *> m_playlist;
+	int m_nowplaying; // item in the playlist we are currently playing
 
 private slots:
 	void addFiles();
 	void tick(qint64 time);
 	void clearPlaylist();
 	void shufflePlaylist();
+
+	void playPause();
+	void playPrevious();
+	void playNext();
+	void enqueueNextSource();
 
 };
 

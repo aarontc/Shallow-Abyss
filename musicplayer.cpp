@@ -10,21 +10,21 @@
 
 MusicPlayer::MusicPlayer(QWidget *parent) :
 		QWidget(parent),
-		m_ui(new Ui::MusicPlayer)
+		m_ui(new Ui::MusicPlayer),
+		m_query(new QSqlQuery)
 {
-
-	m_query = new QSqlQuery;
 	m_ui->setupUi(this);
 
 
-	audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
 	mediaObject = new Phonon::MediaObject(this);
+	audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
+	Phonon::createPath(mediaObject, audioOutput);
 
 	mediaObject->setTickInterval(1000);
 
 	connect(mediaObject, SIGNAL(tick(qint64)), this, SLOT(tick(qint64)));
+	connect(mediaObject, SIGNAL(aboutToFinish()), this, SLOT(enqueueNextSource()));
 
-	Phonon::createPath(mediaObject, audioOutput);
 
 	dlgAddMusic = new AddMusic ( this );
 	connect ( dlgAddMusic, SIGNAL(selected_artistid(quint64)), this, SLOT(playlist_add_artistid(quint64)));
@@ -32,9 +32,62 @@ MusicPlayer::MusicPlayer(QWidget *parent) :
 	connect ( dlgAddMusic, SIGNAL(selected_songid(quint64)), this, SLOT(playlist_add_songid(quint64)));
 	connect ( dlgAddMusic, SIGNAL(selected_file(QString)), this, SLOT(playlist_add_file(QString)));
 
-	connect ( m_ui->btnAdd, SIGNAL(clicked()), this, SLOT(addFiles()));
 
 }
+
+void MusicPlayer::playPause()
+{
+	// are we paused?
+	Phonon::State s = mediaObject->state();
+	switch(s) {
+		case Phonon::PausedState:
+		// resume playing
+		mediaObject->play();
+		m_ui->btnPause->setText("Pause");
+		break;
+		case Phonon::PlayingState:
+		// pause playback
+		mediaObject->pause();
+		m_ui->btnPause->setText("Play");
+		break;
+		case Phonon::StoppedState:
+		case Phonon::LoadingState:
+		// load song and play
+		if ( m_playlist.size() > 0 ) {
+			m_ui->btnPause->setText("Pause");
+			mediaObject->enqueue(Phonon::MediaSource(m_playlist.first()->filePath()));
+			m_nowplaying = 0;
+			mediaObject->play();
+		}
+		break;
+	}
+}
+
+void MusicPlayer::playPrevious() {
+	qDebug()<<"playPrevious: m_nowPlaying was:"<<m_nowplaying;
+	if (mediaObject->state() == Phonon::PlayingState) {
+		if ( m_nowplaying > 0 ) {
+			--m_nowplaying;
+			qDebug()<<"playPrevious: m_nowPlaying now:"<<m_nowplaying;
+			mediaObject->setCurrentSource(Phonon::MediaSource(m_playlist.at(m_nowplaying)->filePath()));
+			mediaObject->play();
+		}
+	}
+}
+
+void MusicPlayer::playNext() {
+	if (mediaObject->state() == Phonon::PlayingState) {
+		if ( m_playlist.size() > m_nowplaying ) {
+			++m_nowplaying;
+			mediaObject->setCurrentSource(Phonon::MediaSource(m_playlist.at(m_nowplaying)->filePath()));
+			mediaObject->play();
+		}
+	}
+}
+
+void MusicPlayer::enqueueNextSource() {
+}
+
 
 MusicPlayer::~MusicPlayer () {
 	delete m_ui;
@@ -42,28 +95,28 @@ MusicPlayer::~MusicPlayer () {
 
 void MusicPlayer::clearPlaylist()
 {
-	playlist.clear();
+	m_playlist.clear();
 	m_ui->tblMusic->clearContents();
 	m_ui->tblMusic->setRowCount(0);
 }
 
 void MusicPlayer::shufflePlaylist() {
 	QVector<Song *> newlist;
-	int x = playlist.size();
+	int x = m_playlist.size();
 
 	while ( x > 0 ) {
 		int y = rand() % x;
 
-		newlist.append(playlist.at(y));
-		playlist.remove(y);
+		newlist.append(m_playlist.at(y));
+		m_playlist.remove(y);
 
-		x = playlist.size();
+		x = m_playlist.size();
 	}
 
 	clearPlaylist();
 	int row = m_ui->tblMusic->rowCount();
-	playlist = newlist;
-	foreach(Song * song, playlist) {
+	m_playlist = newlist;
+	foreach(Song * song, m_playlist) {
 		m_ui->tblMusic->setRowCount(row+1);
 		QTableWidgetItem * newitem = new QTableWidgetItem(song->artist());
 		m_ui->tblMusic->setItem(row, 0, newitem);
@@ -95,11 +148,11 @@ void MusicPlayer::playlist_add_artistid ( quint64 artistid ) {
 
 	int row = m_ui->tblMusic->rowCount();
 	while ( m_query->next() ) {
-		playlist += new Song(m_query->value(0).toULongLong());
+		m_playlist += new Song(m_query->value(0).toULongLong());
 		m_ui->tblMusic->setRowCount(row+1);
-		QTableWidgetItem * newitem = new QTableWidgetItem(playlist.last()->artist());
+		QTableWidgetItem * newitem = new QTableWidgetItem(m_playlist.last()->artist());
 		m_ui->tblMusic->setItem(row, 0, newitem);
-		newitem = new QTableWidgetItem(playlist.last()->title());
+		newitem = new QTableWidgetItem(m_playlist.last()->title());
 		m_ui->tblMusic->setItem(row++, 1, newitem);
 	}
 	m_ui->tblMusic->setRowCount(row);
@@ -113,11 +166,11 @@ void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
 
 	int row = m_ui->tblMusic->rowCount();
 	while ( m_query->next() ) {
-		playlist += new Song(m_query->value(0).toULongLong());
+		m_playlist += new Song(m_query->value(0).toULongLong());
 		m_ui->tblMusic->setRowCount(row+1);
-		QTableWidgetItem * newitem = new QTableWidgetItem(playlist.last()->artist());
+		QTableWidgetItem * newitem = new QTableWidgetItem(m_playlist.last()->artist());
 		m_ui->tblMusic->setItem(row, 0, newitem);
-		newitem = new QTableWidgetItem(playlist.last()->title());
+		newitem = new QTableWidgetItem(m_playlist.last()->title());
 		m_ui->tblMusic->setItem(row++, 1, newitem);
 	}
 	m_ui->tblMusic->setRowCount(row);
@@ -125,14 +178,14 @@ void MusicPlayer::playlist_add_albumid ( quint64 albumid ) {
 }
 
 void MusicPlayer::playlist_add_songid ( quint64 songid ) {
-	playlist += new Song(songid);
+	m_playlist += new Song(songid);
 
 	int row = m_ui->tblMusic->rowCount();
 
 	m_ui->tblMusic->setRowCount(row + 1);
-	QTableWidgetItem * newitem = new QTableWidgetItem(playlist.last()->artist());
+	QTableWidgetItem * newitem = new QTableWidgetItem(m_playlist.last()->artist());
 	m_ui->tblMusic->setItem(row, 0, newitem);
-	newitem = new QTableWidgetItem(playlist.last()->title());
+	newitem = new QTableWidgetItem(m_playlist.last()->title());
 	m_ui->tblMusic->setItem(row, 1, newitem);
 }
 

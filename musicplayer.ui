@@ -65,7 +65,7 @@ p, li { white-space: pre-wrap; }
       <item row="4" column="1">
        <widget class="QPushButton" name="btnPause">
         <property name="text">
-         <string>Pause</string>
+         <string>Play</string>
         </property>
        </widget>
       </item>
@@ -155,9 +155,77 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>MusicPlayer</receiver>
+   <slot>addFiles()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>483</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPrevious</sender>
+   <signal>clicked()</signal>
+   <receiver>MusicPlayer</receiver>
+   <slot>playPrevious()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>78</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPause</sender>
+   <signal>clicked()</signal>
+   <receiver>MusicPlayer</receiver>
+   <slot>playPause()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>205</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnNext</sender>
+   <signal>clicked()</signal>
+   <receiver>MusicPlayer</receiver>
+   <slot>playNext()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>333</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>clearPlaylist()</slot>
   <slot>shufflePlaylist()</slot>
+  <slot>addFiles()</slot>
+  <slot>playPause()</slot>
+  <slot>playPrevious()</slot>
+  <slot>playNext()</slot>
  </slots>
 </ui>
