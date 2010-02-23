@@ -138,6 +138,9 @@ void MusicPlayer::addFiles()
 void MusicPlayer::tick ( qint64 time ) {
 	QTime displayTime ( 0, ( time / 60000 ) % 60, ( time / 1000 ) % 60 );
 	m_ui->lcdTime -> display ( displayTime.toString ( "mm:ss" ) );
+	m_ui->lblNowPlayingTitle->setText(m_playlist.at(m_nowplaying)->title());
+	m_ui->lblNowPlayingArtist->setText(m_playlist.at(m_nowplaying)->artist());
+	m_ui->lblNowPlayingAlbum->setText(m_playlist.at(m_nowplaying)->album());
 }
 
 void MusicPlayer::playlist_add_artistid ( quint64 artistid ) {

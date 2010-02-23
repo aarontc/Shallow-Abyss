@@ -11,8 +11,8 @@ int main ( int argc, char * argv [] ) {
 		return 1;
 
 	HomeScreen h;
-	h.setMinimumSize(QSize(800, 480));
-	h.show();
+	//h.setMinimumSize(QSize(800, 480));
+	h.showFullScreen();
 
 	LibraryScanner ls;
 	ls.start();
