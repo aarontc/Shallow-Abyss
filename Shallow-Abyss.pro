@@ -15,23 +15,23 @@ QT += network \
 TARGET = Shallow-Abyss
 TEMPLATE = app
 SOURCES += main.cpp \
-    homescreen.cpp \
     libraryscanner.cpp \
     musicplayer.cpp \
     addmusic.cpp \
     onscreenkeyboard.cpp \
-    song.cpp
-HEADERS += homescreen.hpp \
-    database.hpp \
+    song.cpp \
+    homescreen.cpp
+HEADERS += database.hpp \
     libraryscanner.hpp \
     musicplayer.hpp \
     addmusic.hpp \
     onscreenkeyboard.hpp \
-    song.hpp
-FORMS += homescreen.ui \
-    musicplayer.ui \
+    song.hpp \
+    homescreen.h
+FORMS += musicplayer.ui \
     addmusic.ui \
-    onscreenkeyboard.ui
+    onscreenkeyboard.ui \
+    homescreen.ui
 INCLUDEPATH += "/usr/include" \
     /usr/include/taglib
 LIBS += -L/usr/lib \
